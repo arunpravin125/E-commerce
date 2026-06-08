@@ -62,7 +62,7 @@ export const Login = async (req, res) => {
     }
   } catch (error) {
     console.log("error in Login", error);
-    res.status(401).json({ message: "error in login:", error });
+    res.status(500).json({ message: "error in login:", error });
   }
 };
 export const SignUp = async (req, res) => {

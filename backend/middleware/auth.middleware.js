@@ -7,7 +7,7 @@ export const protectRoute = async (req, res, next) => {
 
     if (!accessToken) {
       console.log("Access token not found");
-      return res.status(404).json({ message: "Access token not found" });
+      return res.status(401).json({ message: "Access token not found" });
     }
     const decoded = await jwt.verify(
       accessToken,

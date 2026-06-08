@@ -28,9 +28,6 @@ const LoginPage = () => {
   const [passwordSeen, setPasswordSeen] = useState(false);
   const { login, loading, checkAuth } = useUserStore();
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();

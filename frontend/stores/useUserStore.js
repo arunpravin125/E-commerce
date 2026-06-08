@@ -123,6 +123,7 @@ axiosInstance.interceptors.response.use(
 
         return axiosInstance(originalRequest);
       } catch (refreshError) {
+        refreshPromise = null;
         useUserStore.getState().logout();
         return Promise.reject(refreshError);
       }

@@ -110,18 +110,22 @@ export const Logout = async (req, res) => {
   try {
     const refresh_Token = req.cookies.refreshToken;
     if (refresh_Token) {
-      const decoded = jwt.verify(
-        refresh_Token,
-        process.env.REFRESH_TOKEN_SECRET,
-      );
-      await redis.del(`refresh_Token:${decoded.userId}`);
+      try {
+        const decoded = jwt.verify(
+          refresh_Token,
+          process.env.REFRESH_TOKEN_SECRET,
+        );
+        await redis.del(`refresh_Token:${decoded.userId}`);
+      } catch (jwtError) {
+        console.log("Invalid refresh token during logout", jwtError.message);
+      }
     }
 
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
     res.json({ message: "Logged out successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Sever Error", error });
+    res.status(500).json({ message: "Server Error", error });
     console.log("error in logout", error);
   }
 };
@@ -150,8 +154,8 @@ export const refreshTokenController = async (req, res) => {
       res.status(401).json({ message: "Token not found" });
     }
   } catch (error) {
-    console.log("error in refreshTokenController", error);
-    res.status(500).json({ message: "error in refreshTokenController" });
+    console.log("error in refreshTokenController", error.message);
+    res.status(401).json({ message: "Invalid or expired refresh token" });
   }
 };
 

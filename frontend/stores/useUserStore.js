@@ -82,16 +82,11 @@ export const useUserStore = create((set, get) => ({
   },
 
   refreshToken: async () => {
-    if (get().checkingAuth) return;
-
-    set({ checkingAuth: true });
     try {
       const response = await axiosInstance.post("/auth/refreshToken");
-      set({ checkingAuth: false });
       return response.data;
     } catch (error) {
       set({ user: null, checkingAuth: false, loading: false });
-
       throw error;
     }
   },
@@ -104,16 +99,24 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (error?.response?.status === 401 || (404 && !originalRequest._retry)) {
+    // Only try a refresh for 401 responses and avoid retrying the refresh endpoint itself
+    const status = error?.response?.status;
+    if (status === 401 && !originalRequest._retry) {
+      // don't attempt to refresh if the failing request was the refresh endpoint
+      if (
+        originalRequest?.url?.includes("/auth/refreshToken") ||
+        originalRequest?.url?.includes("/auth/login") ||
+        originalRequest?.url?.includes("/auth/signUp")
+      ) {
+        return Promise.reject(error);
+      }
+
       originalRequest._retry = true;
 
       try {
-        if (refreshPromise) {
-          await refreshPromise;
-          return axiosInstance(originalRequest);
+        if (!refreshPromise) {
+          refreshPromise = useUserStore.getState().refreshToken();
         }
-
-        refreshPromise = useUserStore.getState().refreshToken();
 
         await refreshPromise;
         refreshPromise = null;

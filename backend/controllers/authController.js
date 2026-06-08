@@ -141,14 +141,9 @@ export const refreshTokenController = async (req, res) => {
         return res.status(401).json({ message: "inlaid refresh_Token" });
       }
       console.log("refreshTokenController", decoded);
-      const { accessToken } = generateToken(decoded.userId);
-      // setCookies(res, accessToken, refresh_Token);
-      res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        maxAge: 15 * 60 * 1000, // 15 min
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-      });
+      const { accessToken, refreshToken } = generateToken(decoded.userId);
+      await storerefreshToken(decoded.userId, refreshToken);
+      setCookies(res, accessToken, refreshToken);
 
       res.status(200).json({ message: "Access Token created" });
     } else {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   UserPlus,
@@ -23,8 +23,15 @@ const LoginPage = () => {
     password: "",
   });
 
+  // const {checkAuth} = useUserStore
+
   const [passwordSeen, setPasswordSeen] = useState(false);
-  const { login, loading } = useUserStore();
+  const { login, loading, checkAuth } = useUserStore();
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     login(formData);

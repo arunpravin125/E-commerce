@@ -7,7 +7,7 @@ import { useCartStore } from "../../stores/useCartStore";
 const Navbar = () => {
   // const user = true;
   const { user, logout } = useUserStore();
-  const { cart, getCartItems, addToCart } = useCartStore();
+  const { cart, addToCart } = useCartStore();
   const [userData, setUserData] = useState(null);
   // const cart = 3;
   const isAdmin = user?.role == "admin";
@@ -16,10 +16,6 @@ const Navbar = () => {
     console.log("User", user);
     setUserData(user);
   }, [user]);
-
-  useEffect(() => {
-    getCartItems();
-  }, []);
 
   const handleLogout = () => {
     logout();

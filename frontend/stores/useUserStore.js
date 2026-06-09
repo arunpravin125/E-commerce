@@ -74,10 +74,6 @@ export const useUserStore = create((set, get) => ({
       set({ user: response.data, checkingAuth: false });
     } catch (error) {
       set({ checkingAuth: false, user: null });
-      toast.error(
-        error.response.data.message || "An error occurred checkAuth",
-        { id: "logout" },
-      );
     }
   },
 
@@ -113,6 +109,9 @@ axiosInstance.interceptors.response.use(
 
       originalRequest._retry = true;
 
+      // Check if user was previously logged in before attempting refresh
+      const wasLoggedIn = !!useUserStore.getState().user;
+
       try {
         if (!refreshPromise) {
           refreshPromise = useUserStore.getState().refreshToken();
@@ -124,7 +123,9 @@ axiosInstance.interceptors.response.use(
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         refreshPromise = null;
-        useUserStore.getState().logout();
+        if (wasLoggedIn) {
+          useUserStore.getState().logout();
+        }
         return Promise.reject(refreshError);
       }
     }

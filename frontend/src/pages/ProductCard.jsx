@@ -6,12 +6,8 @@ import { useCartStore } from "../../stores/useCartStore";
 
 const ProductCard = ({ product }) => {
   const { user } = useUserStore();
-  const { addToCart, getCartItems, cart } = useCartStore();
+  const { addToCart, cart } = useCartStore();
   console.log("cart", cart.length, cart);
-
-  useEffect(() => {
-    getCartItems();
-  }, [addToCart]);
   // console.log("ProductCard", product);
   const handleAddToCart = (product) => {
     if (!user) {

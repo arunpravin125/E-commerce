@@ -21,8 +21,10 @@ const App = () => {
   }, [checkAuth]);
 
   useEffect(() => {
-    getCartItems();
-  }, []);
+    if (user) {
+      getCartItems();
+    }
+  }, [user, getCartItems]);
 
   if (checkingAuth) return <LoadingSpinner />;
   return (
@@ -34,7 +36,10 @@ const App = () => {
         <Navbar />
         <Routes>
           <Route path="/" element={user ? <HomePage /> : <LoginPage />} />
-          <Route path="/signup" element={user ? <HomePage /> : <LoginPage />} />
+          <Route
+            path="/signup"
+            element={user ? <HomePage /> : <SignUpPage />}
+          />
           <Route path="/login" element={user ? <HomePage /> : <LoginPage />} />
           <Route
             path="/secret-dashboard"

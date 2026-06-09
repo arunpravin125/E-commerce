@@ -165,6 +165,6 @@ export const userProfile = async (req, res) => {
     res.json(user);
   } catch (error) {
     console.log("error in userProfile:", error);
-    res.status(400).json({ message: "error in userProfile:", error });
+    res.status(500).json({ message: "error in userProfile:", error });
   }
 };

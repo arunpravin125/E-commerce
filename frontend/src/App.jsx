@@ -34,10 +34,7 @@ const App = () => {
         <Navbar />
         <Routes>
           <Route path="/" element={user ? <HomePage /> : <LoginPage />} />
-          <Route
-            path="/signup"
-            element={!user ? <HomePage /> : <LoginPage />}
-          />
+          <Route path="/signup" element={user ? <HomePage /> : <LoginPage />} />
           <Route path="/login" element={user ? <HomePage /> : <LoginPage />} />
           <Route
             path="/secret-dashboard"
